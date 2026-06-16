@@ -6,10 +6,16 @@ Selects today's learning topic and collects due reviews.
 Outputs a structured brief for Claude Code to use.
 
 Usage:
-    python daily_knowledge.py                  # Print brief to stdout
-    python daily_knowledge.py --update         # Interactive: add new lesson row after Claude finishes
-    python daily_knowledge.py --mark-reviewed <id> [<id> ...]  # Mark reviews as done, bump next_review
-    python daily_knowledge.py --json           # Output brief as JSON instead of plain text
+    python daily_knowledge.py                        # Print brief to stdout
+    python daily_knowledge.py --json                 # Output brief as JSON
+    python daily_knowledge.py --list                 # Print all covered topics
+    python daily_knowledge.py --update               # Interactive: add new lesson (manual use)
+    python daily_knowledge.py --add-lesson           # Non-interactive add (automated use)
+        --topic "Flash Attention 2"
+        --category ai --subcategory ai_technical
+        --difficulty 3
+        --context "IO-aware tiling, sequence scaling"
+    python daily_knowledge.py --mark-reviewed <id> [<id> ...]
 """
 
 import argparse
@@ -300,6 +306,30 @@ def cmd_update(rows: list[dict]) -> None:
     print(f"\n✓ Saved: '{topic}' — next review {next_review}")
 
 
+def cmd_add_lesson(rows: list[dict], topic: str, category: str, subcategory: str,
+                   difficulty: str, context: str) -> None:
+    """Non-interactive version of --update, used by automated routines."""
+    interval = REVIEW_INTERVALS.get(subcategory, 30)
+    next_review = date.today() + timedelta(days=interval)
+
+    row = {
+        "id": str(next_id(rows)),
+        "date": str(date.today()),
+        "type": "lesson",
+        "topic": topic,
+        "category": category,
+        "subcategory": subcategory,
+        "difficulty": difficulty,
+        "next_review": str(next_review),
+        "review_interval": str(interval),
+        "context_for_review": context,
+    }
+
+    rows.append(row)
+    save_rows(rows)
+    print(f"✓ Saved: '{topic}' — next review {next_review}")
+
+
 def cmd_mark_reviewed(rows: list[dict], ids: list[str]) -> None:
     """Bump next_review for the given IDs and record a review_done row."""
     id_set = set(ids)
@@ -340,6 +370,16 @@ def main() -> None:
         help="Interactively add a new lesson row after Claude generates content",
     )
     parser.add_argument(
+        "--add-lesson",
+        action="store_true",
+        help="Non-interactively add a lesson row (for automated routines)",
+    )
+    parser.add_argument("--topic",      help="Topic name (used with --add-lesson)")
+    parser.add_argument("--category",   help="Category: ai | robotics | other_cs")
+    parser.add_argument("--subcategory",help="Subcategory: ai_tool | ai_nontechnical | ai_technical | robotics | other_cs")
+    parser.add_argument("--difficulty", help="Difficulty: 1 | 2 | 3")
+    parser.add_argument("--context",    default="", help="Context for future review")
+    parser.add_argument(
         "--mark-reviewed",
         nargs="+",
         metavar="ID",
@@ -363,6 +403,16 @@ def main() -> None:
 
     if args.update:
         cmd_update(rows)
+        return
+
+    if args.add_lesson:
+        missing = [f for f in ("topic", "category", "subcategory", "difficulty")
+                   if not getattr(args, f)]
+        if missing:
+            print(f"Error: --add-lesson requires: {', '.join('--' + f for f in missing)}")
+            sys.exit(1)
+        cmd_add_lesson(rows, args.topic, args.category, args.subcategory,
+                       args.difficulty, args.context)
         return
 
     if args.mark_reviewed:
