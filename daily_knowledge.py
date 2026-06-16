@@ -58,14 +58,15 @@ REVIEW_INTERVALS = {
 CSV_FIELDS = [
     "id",
     "date",
-    "type",           # lesson | review_done
+    "type",             # lesson | review_done
     "topic",
-    "category",       # ai | robotics | other_cs
-    "subcategory",    # ai_tool | ai_nontechnical | ai_technical | robotics | other_cs
-    "difficulty",     # 1=beginner 2=intermediate 3=advanced
+    "category",         # ai | robotics | other_cs
+    "subcategory",      # ai_tool | ai_nontechnical | ai_technical | robotics | other_cs
+    "difficulty",       # 1=beginner 2=intermediate 3=advanced
     "next_review",
     "review_interval",
-    "context_for_review",  # what Claude should recall + search for at review time
+    "context_for_review",   # what Claude should recall + search for at review time
+    "notion_page_id",       # Notion page ID created for this lesson
 ]
 
 # ---------------------------------------------------------------------------
@@ -284,6 +285,9 @@ def cmd_update(rows: list[dict]) -> None:
     context = input(
         "Context for future review (key facts, what to search for). Leave blank if none: "
     ).strip()
+    notion_page_id = input(
+        "Notion page ID (from the page URL, e.g. 1a2b3c4d...). Leave blank if unknown: "
+    ).strip()
 
     interval = REVIEW_INTERVALS.get(subcategory, 30)
     next_review = date.today() + timedelta(days=interval)
@@ -299,6 +303,7 @@ def cmd_update(rows: list[dict]) -> None:
         "next_review": str(next_review),
         "review_interval": str(interval),
         "context_for_review": context,
+        "notion_page_id": notion_page_id,
     }
 
     rows.append(row)
@@ -307,7 +312,7 @@ def cmd_update(rows: list[dict]) -> None:
 
 
 def cmd_add_lesson(rows: list[dict], topic: str, category: str, subcategory: str,
-                   difficulty: str, context: str) -> None:
+                   difficulty: str, context: str, notion_page_id: str = "") -> None:
     """Non-interactive version of --update, used by automated routines."""
     interval = REVIEW_INTERVALS.get(subcategory, 30)
     next_review = date.today() + timedelta(days=interval)
@@ -323,11 +328,12 @@ def cmd_add_lesson(rows: list[dict], topic: str, category: str, subcategory: str
         "next_review": str(next_review),
         "review_interval": str(interval),
         "context_for_review": context,
+        "notion_page_id": notion_page_id,
     }
 
     rows.append(row)
     save_rows(rows)
-    print(f"✓ Saved: '{topic}' — next review {next_review}")
+    print(f"✓ Saved: '{topic}' — next review {next_review} — notion_page_id: {notion_page_id or '(none)'}")
 
 
 def cmd_mark_reviewed(rows: list[dict], ids: list[str]) -> None:
@@ -378,7 +384,8 @@ def main() -> None:
     parser.add_argument("--category",   help="Category: ai | robotics | other_cs")
     parser.add_argument("--subcategory",help="Subcategory: ai_tool | ai_nontechnical | ai_technical | robotics | other_cs")
     parser.add_argument("--difficulty", help="Difficulty: 1 | 2 | 3")
-    parser.add_argument("--context",    default="", help="Context for future review")
+    parser.add_argument("--context",         default="", help="Context for future review")
+    parser.add_argument("--notion-page-id",  default="", help="Notion page ID of the created lesson page")
     parser.add_argument(
         "--mark-reviewed",
         nargs="+",
@@ -412,7 +419,7 @@ def main() -> None:
             print(f"Error: --add-lesson requires: {', '.join('--' + f for f in missing)}")
             sys.exit(1)
         cmd_add_lesson(rows, args.topic, args.category, args.subcategory,
-                       args.difficulty, args.context)
+                       args.difficulty, args.context, args.notion_page_id)
         return
 
     if args.mark_reviewed:

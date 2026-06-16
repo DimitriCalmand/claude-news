@@ -1,4 +1,5 @@
-id,date,type,topic,category,subcategory,difficulty,next_review,review_interval,context_for_review
-1,2026-06-01,lesson,Transformer positional encodings,ai,ai_technical,3,2026-07-31,60,Covered RoPE vs ALiBi vs learned embeddings — check for new variants or papers
-2,2026-06-09,lesson,Mistral AI funding and strategy,ai,ai_nontechnical,1,2026-06-23,7,"Series B rumored ~$1B valuation, EU AI independence angle — fetch latest news"
-3,2026-06-10,lesson,Amazon Nova model family overview,ai,ai_tool,2,2026-07-01,21,"Covered Nova Micro/Lite/Pro on Bedrock, cross-region inference, converse API"
+id,date,type,topic,category,subcategory,difficulty,next_review,review_interval,context_for_review,notion_page_id
+1,2026-06-01,lesson,Transformer positional encodings,ai,ai_technical,3,2026-07-31,60,Covered RoPE vs ALiBi vs learned embeddings — check for new variants or papers,
+2,2026-06-09,lesson,Mistral AI funding and strategy,ai,ai_nontechnical,1,2026-06-23,7,"Series B rumored ~$1B valuation, EU AI independence angle — fetch latest news",
+3,2026-06-10,lesson,Amazon Nova model family overview,ai,ai_tool,2,2026-07-01,21,"Covered Nova Micro/Lite/Pro on Bedrock, cross-region inference, converse API",
+4,2026-06-16,lesson,Consistent Hashing,other_cs,other_cs,2,2026-09-14,90,"Ring-based key distribution, virtual nodes — check for new distributed systems usage",

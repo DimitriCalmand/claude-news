@@ -14,27 +14,39 @@ Every morning, this routine:
 
 ```
 Step 1 — Get the brief
-  python daily_knowledge.py
+  python daily_knowledge.py --json
 
 Step 2 — Generate lesson & reviews (see format below)
-  Write a Notion page for the new topic.
+  Write a Notion page for the new topic. Note the page ID returned by the Notion API.
   For each due review, search the web and summarise what changed.
 
-Step 3 — Save to CSV
-  python daily_knowledge.py --update
-  (interactive: you will be prompted for topic name, category, difficulty, context)
+Step 3 — Save to CSV (non-interactive, automated)
+  python daily_knowledge.py --add-lesson \
+    --topic "<exact title as written in Notion>" \
+    --category <ai|robotics|other_cs> \
+    --subcategory <ai_tool|ai_nontechnical|ai_technical|robotics|other_cs> \
+    --difficulty <1|2|3> \
+    --context "<key facts + what to search at review time>" \
+    --notion-page-id "<page ID returned by Notion API>"
 
-Step 4 — Mark reviews done
+Step 4 — Mark reviews done (if any were due)
   python daily_knowledge.py --mark-reviewed <id1> <id2> ...
-  (use the IDs printed in the brief)
+
+Step 5 — Commit and push directly to main
+  git add knowledge.csv
+  git commit -m "chore: daily knowledge $(date +%Y-%m-%d)"
+  git push origin main
 ```
+
+**Important: always push to `main` directly — do not create a branch or open a pull request.**
 
 ---
 
 ## Notion page format
-Daily-Knowledge-381decc0c4b780418f01d590150c1077
+
 Target: the "Daily Knowledge" parent page.
-Create one child page per lesson with this structure:
+Create one child page per lesson with this structure.
+**After creating the page, capture the page ID from the Notion API response — you will need it for Step 3 (`--notion-page-id`).**
 
 ### Page title
 `[YYYY-MM-DD] <Topic Name>`
