@@ -6,7 +6,7 @@ Every morning, this routine:
 1. Runs `daily_knowledge.py` to get today's brief (new topic + due reviews)
 2. Generates a rich Notion page for the new lesson
 3. Fetches updates for any due review topics
-4. Updates `knowledge.csv` via the script's `--update` and `--mark-reviewed` commands
+4. Updates `knowledge.csv` via the script's `--add-lesson` and `--mark-reviewed` commands
 
 ---
 
@@ -22,7 +22,7 @@ Step 2 — Generate lesson & reviews (see format below)
 
 Step 3 — Save to CSV (non-interactive, automated)
   python daily_knowledge.py --add-lesson \
-    --topic "<exact title as written in Notion>" \
+    --topic "<exact title as written in Notion, WITHOUT the emoji>" \
     --category <ai|robotics|other_cs> \
     --subcategory <ai_tool|ai_nontechnical|ai_technical|robotics|other_cs> \
     --difficulty <1|2|3> \
@@ -33,12 +33,13 @@ Step 4 — Mark reviews done (if any were due)
   python daily_knowledge.py --mark-reviewed <id1> <id2> ...
 
 Step 5 — Commit and push directly to main
+  git checkout main
   git add knowledge.csv
   git commit -m "chore: daily knowledge $(date +%Y-%m-%d)"
   git push origin main
 ```
 
-**Important: always push to `main` directly — do not create a branch or open a pull request.**
+**CRITICAL: Always run `git checkout main` before committing. Never push to a `claude/*` branch. Never open a pull request.**
 
 ---
 
@@ -49,7 +50,15 @@ Create one child page per lesson with this structure.
 **After creating the page, capture the page ID from the Notion API response — you will need it for Step 3 (`--notion-page-id`).**
 
 ### Page title
-`[YYYY-MM-DD] <Topic Name>`
+
+Must follow this exact format: `<emoji> [YYYY-MM-DD] <Topic Name>`
+
+- Pick one emoji that genuinely fits the topic (e.g. 🧠 for ML concepts, 🔧 for tools, 🤖 for robotics, 🔐 for crypto/security, 🌐 for networking, ⚙️ for systems)
+- The emoji makes the page instantly recognisable in the Notion sidebar
+- Examples:
+  - `🧠 [2026-06-16] Mixture of Experts`
+  - `🔧 [2026-06-17] Amazon Bedrock Guardrails`
+  - `🌐 [2026-06-18] Consistent Hashing`
 
 ### Page body (in order)
 
