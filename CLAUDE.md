@@ -6,7 +6,7 @@ Every morning, this routine:
 1. Runs `daily_knowledge.py` to get today's brief (new topic + due reviews)
 2. Generates a rich Notion page for the new lesson
 3. Fetches updates for any due review topics
-4. Updates `knowledge.csv` via the script's `--update` and `--mark-reviewed` commands
+4. Updates `knowledge.csv` via the script's `--add-lesson` and `--mark-reviewed` commands
 
 ---
 
@@ -14,30 +14,51 @@ Every morning, this routine:
 
 ```
 Step 1 — Get the brief
-  python daily_knowledge.py
+  python daily_knowledge.py --json
 
 Step 2 — Generate lesson & reviews (see format below)
-  Write a Notion page for the new topic.
+  Write a Notion page for the new topic. Note the page ID returned by the Notion API.
   For each due review, search the web and summarise what changed.
 
-Step 3 — Save to CSV
-  python daily_knowledge.py --update
-  (interactive: you will be prompted for topic name, category, difficulty, context)
+Step 3 — Save to CSV (non-interactive, automated)
+  python daily_knowledge.py --add-lesson \
+    --topic "<exact title as written in Notion, WITHOUT the emoji>" \
+    --category <ai|robotics|other_cs> \
+    --subcategory <ai_tool|ai_nontechnical|ai_technical|robotics|other_cs> \
+    --difficulty <1|2|3> \
+    --context "<key facts + what to search at review time>" \
+    --notion-page-id "<page ID returned by Notion API>"
 
-Step 4 — Mark reviews done
+Step 4 — Mark reviews done (if any were due)
   python daily_knowledge.py --mark-reviewed <id1> <id2> ...
-  (use the IDs printed in the brief)
+
+Step 5 — Commit and push directly to main
+  git checkout main
+  git add knowledge.csv
+  git commit -m "chore: daily knowledge $(date +%Y-%m-%d)"
+  git push origin main
 ```
+
+**CRITICAL: Always run `git checkout main` before committing. Never push to a `claude/*` branch. Never open a pull request.**
 
 ---
 
 ## Notion page format
-Daily-Knowledge-381decc0c4b780418f01d590150c1077
+
 Target: the "Daily Knowledge" parent page.
-Create one child page per lesson with this structure:
+Create one child page per lesson with this structure.
+**After creating the page, capture the page ID from the Notion API response — you will need it for Step 3 (`--notion-page-id`).**
 
 ### Page title
-`[YYYY-MM-DD] <Topic Name>`
+
+Must follow this exact format: `<emoji> [YYYY-MM-DD] <Topic Name>`
+
+- Pick one emoji that genuinely fits the topic (e.g. 🧠 for ML concepts, 🔧 for tools, 🤖 for robotics, 🔐 for crypto/security, 🌐 for networking, ⚙️ for systems)
+- The emoji makes the page instantly recognisable in the Notion sidebar
+- Examples:
+  - `🧠 [2026-06-16] Mixture of Experts`
+  - `🔧 [2026-06-17] Amazon Bedrock Guardrails`
+  - `🌐 [2026-06-18] Consistent Hashing`
 
 ### Page body (in order)
 
