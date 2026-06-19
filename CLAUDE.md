@@ -57,7 +57,7 @@ Must follow this exact format: `<emoji> [YYYY-MM-DD] <Topic Name>`
 - The emoji makes the page instantly recognisable in the Notion sidebar
 - Examples:
   - `🧠 [2026-06-16] Mixture of Experts`
-  - `🔧 [2026-06-17] Amazon Bedrock Guardrails`
+  - `✍️ [2026-06-17] GitHub Copilot — Beyond Autocomplete`
   - `🌐 [2026-06-18] Consistent Hashing`
 
 ### Page body (in order)
@@ -117,3 +117,9 @@ Still relevant to your work?
 - Comfortable with: transformers, fine-tuning (RoBERTa), LLM classification prompts, data engineering
 - Wants both breadth (new topics) and depth (technical AI)
 - Communicates in French conversationally, English for technical content — write lessons in **English**
+
+### What `ai_tool` means
+
+AI-powered tools and products that improve daily life or work — assistants, creative tools, productivity apps, coding helpers. Examples: Claude, Gemini, HeyGen, Notion AI, GitHub Copilot, Cursor, Perplexity, ElevenLabs, Kling, Suno.
+
+**Not** cloud infrastructure (AWS Bedrock, GCP Vertex, Azure OpenAI) — those belong in `ai_technical` if covered at all.

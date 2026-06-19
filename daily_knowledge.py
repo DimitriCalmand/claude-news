@@ -186,9 +186,11 @@ def build_brief(category: str, subcategory: str, reviews: list[dict]) -> dict:
 def _topic_instruction(subcategory: str) -> str:
     instructions = {
         "ai_tool": (
-            "Pick a practical AI tool relevant to ML engineering or content moderation work "
-            "(e.g. a new IDE feature, a Bedrock capability, a LangChain utility). "
-            "Focus on hands-on usage with a concrete example."
+            "Pick an AI-powered tool or product that could improve daily life or work — "
+            "think assistants, creative tools, productivity apps, or coding helpers "
+            "(e.g. Claude features, Gemini, HeyGen, Notion AI, GitHub Copilot, Cursor, Perplexity, ElevenLabs). "
+            "NOT cloud infrastructure (AWS, GCP, Azure) — focus on end-user AI tools that are interesting or useful. "
+            "Cover what the tool does, a concrete hands-on example, and whether it's worth using."
         ),
         "ai_nontechnical": (
             "Pick a non-technical AI concept or current event — how a well-known model works "
