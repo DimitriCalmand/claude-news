@@ -67,7 +67,7 @@ Must follow this exact format: `<emoji> [YYYY-MM-DD] <Topic Name>`
 **The concept**
 - Friendly explanation with concrete analogies
 - Real-world examples
-- Equations where they add clarity (use LaTeX-style notation)
+- No equations — explain the mechanics in plain words and analogies instead
 - At least one diagram or graph if the topic is visual (describe it clearly; generate SVG if possible)
 
 **Work angle**
@@ -105,7 +105,7 @@ Still relevant to your work?
 
 - Friendly, not dry. Write like a smart colleague explaining over coffee.
 - Concrete before abstract. Always give an example before the formal definition.
-- Depth scales with difficulty: level 1 = intuition only, level 2 = intuition + mechanics, level 3 = full technical depth including math.
+- Depth scales with difficulty: level 1 = intuition only, level 2 = intuition + mechanics, level 3 = full technical depth. Never use equations — always explain through words, analogies, and examples so the concept is fully understood without having to calculate anything.
 - Never skip the work angle — this is the most important part for making knowledge stick.
 
 ---
